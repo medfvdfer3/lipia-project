@@ -19,9 +19,10 @@ const ChatbotPopup: React.FC = () => {
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const [conversationHistory, setConversationHistory] = useState<string[]>([]);
-  const [userProfile, setUserProfile] = useState<any>({});
-  const [learningData, setLearningData] = useState<any>({});
+ const [conversationHistory, setConversationHistory] = useState<string[]>([]);
+const [userProfile, setUserProfile] = useState<{ totalQuestions?: number; lastQuestion?: string; timestamp?: string }>({});
+const [learningData, setLearningData] = useState<Record<string, string> & { totalQuestions?: number }>({});
+
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
