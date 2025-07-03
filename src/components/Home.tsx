@@ -409,13 +409,14 @@ export default function HomePage() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          <Image
-            src="/sp1.png"
-            alt="صورة الكارد"
-            width={500}
-            height={300}
-            style={{ display: 'block', width: '100%', height: 'auto' }}
-          />
+        <Image
+  src="/sp1.png"
+  alt="صورة الكارد"
+  width={500}
+  height={300}
+  className="w-full h-auto block"
+/>
+
         </a>
       </div>
     </div>

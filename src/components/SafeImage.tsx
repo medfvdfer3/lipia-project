@@ -6,23 +6,25 @@ import { useState } from 'react';
 interface SafeImageProps {
   src: string;
   alt: string;
-  width: number;
-  height: number;
+  width?: number;
+  height?: number;
   className?: string;
   fallbackSrc?: string;
   priority?: boolean;
   suppressHydrationWarning?: boolean;
+  fill?: boolean; // ⬅️ مفيد لصور الخلفية أو full width
 }
 
-export default function SafeImage({ 
-  src, 
-  alt, 
-  width, 
-  height, 
-  className, 
-  fallbackSrc = '/logo.png', 
+export default function SafeImage({
+  src,
+  alt,
+  width,
+  height,
+  className,
+  fallbackSrc = '/logo.png',
   priority = false,
-  suppressHydrationWarning = false
+  suppressHydrationWarning = false,
+  fill = false,
 }: SafeImageProps) {
   const [imgSrc, setImgSrc] = useState(src);
   const [hasError, setHasError] = useState(false);
@@ -37,9 +39,10 @@ export default function SafeImage({
   return (
     <Image
       src={imgSrc}
-      alt={alt}
-      width={width}
-      height={height}
+      alt={alt || "image"}
+      width={fill ? undefined : width}
+      height={fill ? undefined : height}
+      fill={fill}
       className={className}
       priority={priority}
       suppressHydrationWarning={suppressHydrationWarning}
