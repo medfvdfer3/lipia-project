@@ -1,10 +1,15 @@
-"use client";
+'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, KeyboardEvent } from 'react';
 
-const ChatbotPopup = () => {
+interface Message {
+  type: 'user' | 'bot';
+  text: string;
+}
+
+const ChatbotPopup: React.FC = () => {
   const [showChat, setShowChat] = useState(false);
-  const [messages, setMessages] = useState([
+  const [messages, setMessages] = useState<Message[]>([
     {
       type: 'bot',
       text: '🤖 مرحباً! أنا مساعدك الذكي المتطور! 🧠\n\n✨ يمكنني مساعدتك في:\n🎯 معلومات المؤتمر الشاملة\n⚡ الطاقة المتجددة والتكنولوجيا\n🌍 تغير المناخ والبيئة\n📚 البحث العلمي والأكاديمي\n💡 أي سؤال علمي أو تقني\n\nاسألني أي شيء وسأعطيك إجابة مفصلة وذكية! 😊'
@@ -12,19 +17,15 @@ const ChatbotPopup = () => {
   ]);
   const [inputText, setInputText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
-  const messagesEndRef = useRef(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
+  const [conversationHistory, setConversationHistory] = useState<string[]>([]);
+  const [userProfile, setUserProfile] = useState<any>({});
+  const [learningData, setLearningData] = useState<any>({});
 
   useEffect(() => {
-    scrollToBottom();
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
-// 🧠 نظام الذكاء الاصطناعي المتقدم
-const [conversationHistory, setConversationHistory] = useState([]);
-const [userProfile, setUserProfile] = useState({});
-const [learningData, setLearningData] = useState({});
 
   // 🧠 قاعدة المعرفة الضخمة - أكثر من 100,000 سؤال وجواب
   const megaKnowledgeBase = {
@@ -441,10 +442,9 @@ const [learningData, setLearningData] = useState({});
   const handleSendMessage = () => {
     if (!inputText.trim()) return;
 
-    const userMessage = { type: 'user', text: inputText };
+    const userMessage: Message = { type: 'user', text: inputText };
     setMessages(prev => [...prev, userMessage]);
 
-    // تحديث ملف المستخدم
     setUserProfile(prev => ({
       ...prev,
       totalQuestions: (prev.totalQuestions || 0) + 1,
@@ -455,20 +455,18 @@ const [learningData, setLearningData] = useState({});
     setInputText('');
     setIsTyping(true);
 
-    // محاكاة تأخير الرد مع ذكاء متقدم
     setTimeout(() => {
       const botResponse = findAnswer(inputText);
       const suggestion = suggestQuestions();
-
       const enhancedResponse = `${botResponse}\n\n💡 اقتراح: ${suggestion}`;
 
-      const botMessage = { type: 'bot', text: enhancedResponse };
+      const botMessage: Message = { type: 'bot', text: enhancedResponse };
       setMessages(prev => [...prev, botMessage]);
       setIsTyping(false);
-    }, Math.random() * 1500 + 500); // تأخير عشوائي لمحاكاة التفكير
+    }, Math.random() * 1500 + 500);
   };
 
-  const handleKeyDown = (e) => {
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       handleSendMessage();
     }
@@ -480,39 +478,39 @@ const [learningData, setLearningData] = useState({});
 
   return (
     <>
-      {/* زر ثابت في الركن السفلي الأيمن */}
-    <button
-  style={{
-    position: 'fixed',
-    bottom: '20px',
-    right: '20px',
-    zIndex: 1000,
-    padding: '15px 20px',
-    background: 'linear-gradient(45deg, rgb(255, 136, 0), rgb(255, 165, 0))',
-    color: 'white',
-    border: 'none',
-    borderRadius: '50px',
-    cursor: 'pointer',
-    boxShadow: '0 4px 15px rgba(255, 123, 0, 0.69)',
-    fontSize: '16px',
-    fontWeight: 'bold',
-    transition: 'all 0.3s ease',
-    transform: showChat ? 'scale(0.9)' : 'scale(1)',
-  }}
-  onClick={toggleChat}
-  onMouseEnter={(e) => {
-    e.target.style.transform = 'scale(1.1)';
-    e.target.style.boxShadow = '0 6px 20px rgba(255, 153, 0, 0.8)';
-  }}
-  onMouseLeave={(e) => {
-    e.target.style.transform = showChat ? 'scale(0.9)' : 'scale(1)';
-    e.target.style.boxShadow = '0 4px 15px rgba(255, 123, 0, 0.69)';
-  }}
->
-  {showChat ? '✕' : ' Chat'}
-</button>
+      {/* زر فتح الشات */}
+      <button
+        style={{
+          position: 'fixed',
+          bottom: '20px',
+          right: '20px',
+          zIndex: 1000,
+          padding: '15px 20px',
+          background: 'linear-gradient(45deg, rgb(255, 136, 0), rgb(255, 165, 0))',
+          color: 'white',
+          border: 'none',
+          borderRadius: '50px',
+          cursor: 'pointer',
+          boxShadow: '0 4px 15px rgba(255, 123, 0, 0.69)',
+          fontSize: '16px',
+          fontWeight: 'bold',
+          transition: 'all 0.3s ease',
+          transform: showChat ? 'scale(0.9)' : 'scale(1)'
+        }}
+        onClick={toggleChat}
+        onMouseEnter={(e) => {
+          (e.target as HTMLButtonElement).style.transform = 'scale(1.1)';
+          (e.target as HTMLButtonElement).style.boxShadow = '0 6px 20px rgba(255, 153, 0, 0.8)';
+        }}
+        onMouseLeave={(e) => {
+          (e.target as HTMLButtonElement).style.transform = showChat ? 'scale(0.9)' : 'scale(1)';
+          (e.target as HTMLButtonElement).style.boxShadow = '0 4px 15px rgba(255, 123, 0, 0.69)';
+        }}
+      >
+        {showChat ? '✕' : ' Chat'}
+      </button>
 
-      {/* الصفحة اللي بتظهر عند الضغط */}
+      {/* نافذة الشات */}
       {showChat && (
         <div
           style={{
@@ -526,128 +524,111 @@ const [learningData, setLearningData] = useState({});
             borderRadius: '10px',
             zIndex: 999,
             display: 'flex',
-            flexDirection: 'column',
+            flexDirection: 'column'
           }}
         >
-          {/* رأس الـ Chatbot */}
-<div
-  style={{
-    backgroundColor: '#ff8800', // العنوان
-    color: 'white',
-    padding: '10px',
-    borderTopLeftRadius: '10px',
-    borderTopRightRadius: '10px',
-  }}
->
-  <h4 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
-    🧠 مساعد ذكي متطور
-    <span style={{ fontSize: '12px', opacity: 0.8 }}>• متصل</span>
-  </h4>
-</div>
+          <div
+            style={{
+              backgroundColor: '#ff8800',
+              color: 'white',
+              padding: '10px',
+              borderTopLeftRadius: '10px',
+              borderTopRightRadius: '10px'
+            }}
+          >
+            <h4 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
+              🧠 مساعد ذكي متطور
+              <span style={{ fontSize: '12px', opacity: 0.8 }}>• متصل</span>
+            </h4>
+          </div>
 
-{/* محتوى الـ Chatbot */}
-<div style={{ flex: 1, padding: '10px', overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
-  {/* الرسائل */}
-  <div style={{ flex: 1, overflowY: 'auto', marginBottom: '10px' }}>
-    {messages.map((message, index) => (
-      <div
-        key={index}
-        style={{
-          marginBottom: '10px',
-          display: 'flex',
-          justifyContent: message.type === 'user' ? 'flex-end' : 'flex-start'
-        }}
-      >
-        <div
-          style={{
-            maxWidth: '85%',
-            padding: '10px 15px',
-            borderRadius: '18px',
-            background: message.type === 'user'
-              ? 'linear-gradient(45deg,rgb(255, 115, 0),rgb(179, 101, 0))'
-              : 'linear-gradient(45deg, #f8f9fa, #e9ecef)',
-            color: message.type === 'user' ? 'white' : '#333',
-            fontSize: '14px',
-            lineHeight: '1.5',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-            border: message.type === 'bot' ? '1px solid #dee2e6' : 'none',
-            whiteSpace: 'pre-line'
-          }}
-        >
-          {message.text}
+          {/* الرسائل */}
+          <div style={{ flex: 1, padding: '10px', overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
+            <div style={{ flex: 1, overflowY: 'auto', marginBottom: '10px' }}>
+              {messages.map((message, index) => (
+                <div
+                  key={index}
+                  style={{
+                    marginBottom: '10px',
+                    display: 'flex',
+                    justifyContent: message.type === 'user' ? 'flex-end' : 'flex-start'
+                  }}
+                >
+                  <div
+                    style={{
+                      maxWidth: '85%',
+                      padding: '10px 15px',
+                      borderRadius: '18px',
+                      background:
+                        message.type === 'user'
+                          ? 'linear-gradient(45deg,rgb(255, 115, 0),rgb(179, 101, 0))'
+                          : 'linear-gradient(45deg, #f8f9fa, #e9ecef)',
+                      color: message.type === 'user' ? 'white' : '#333',
+                      fontSize: '14px',
+                      lineHeight: '1.5',
+                      boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                      border: message.type === 'bot' ? '1px solid #dee2e6' : 'none',
+                      whiteSpace: 'pre-line'
+                    }}
+                  >
+                    {message.text}
+                  </div>
+                </div>
+              ))}
+              {isTyping && (
+                <div style={{ display: 'flex', justifyContent: 'flex-start', marginBottom: '10px' }}>
+                  <div
+                    style={{
+                      padding: '10px 15px',
+                      borderRadius: '18px',
+                      background: 'linear-gradient(45deg, #f8f9fa, #e9ecef)',
+                      fontSize: '14px',
+                      border: '1px solid #dee2e6',
+                      boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                      animation: 'pulse 1.5s infinite'
+                    }}
+                  >
+                    🤖 أفكر في إجابة ذكية...
+                  </div>
+                </div>
+              )}
+              <div ref={messagesEndRef} />
+            </div>
+
+            {/* الإدخال */}
+            <div style={{ display: 'flex', gap: '5px' }}>
+              <input
+                type="text"
+                value={inputText}
+                onChange={(e) => setInputText(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder="اكتب رسالتك هنا..."
+                style={{
+                  flex: 1,
+                  padding: '8px',
+                  border: '1px solid #ddd',
+                  borderRadius: '20px',
+                  outline: 'none',
+                  fontSize: '14px'
+                }}
+              />
+              <button
+                onClick={handleSendMessage}
+                style={{
+                  padding: '8px 15px',
+                  backgroundColor: '#ff8800',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '20px',
+                  cursor: 'pointer',
+                  fontSize: '14px'
+                }}
+              >
+                إرسال
+              </button>
+            </div>
+          </div>
         </div>
-      </div>
-    ))}
-    {isTyping && (
-      <div style={{ display: 'flex', justifyContent: 'flex-start', marginBottom: '10px' }}>
-        <div
-          style={{
-            padding: '10px 15px',
-            borderRadius: '18px',
-            background: 'linear-gradient(45deg, #f8f9fa, #e9ecef)',
-            fontSize: '14px',
-            border: '1px solid #dee2e6',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-            animation: 'pulse 1.5s infinite'
-          }}
-        >
-          🤖 أفكر في إجابة ذكية...
-        </div>
-      </div>
-    )}
-    <div ref={messagesEndRef} />
-  </div>
-
-  {/* مربع الإدخال */}
-  <div style={{ display: 'flex', gap: '5px' }}>
-    <input
-      type="text"
-      value={inputText}
-      onChange={(e) => setInputText(e.target.value)}
-      onKeyDown={handleKeyDown}
-      placeholder="اكتب رسالتك هنا..."
-      style={{
-        flex: 1,
-        padding: '8px',
-        border: '1px solid #ddd',
-        borderRadius: '20px',
-        outline: 'none',
-        fontSize: '14px'
-      }}
-    />
-    <button
-      onClick={handleSendMessage}
-      style={{
-        padding: '8px 15px',
-        backgroundColor: '#ff8800', // زر الإرسال
-        color: 'white',
-        border: 'none',
-        borderRadius: '20px',
-        cursor: 'pointer',
-        fontSize: '14px'
-      }}
-    >
-      إرسال
-    </button>
-  </div>
-</div>
-
-{/* زر إغلاق */}
-<button
-  style={{
-    position: 'absolute',
-    top: '5px',
-    right: '10px',
-    background: 'transparent',
-    border: 'none',
-    fontSize: '20px',
-    cursor: 'pointer',
-  }}
-  onClick={toggleChat}
->
-  &times;
-</button>
-</ div>
       )}
     </>
   );
