@@ -2,18 +2,17 @@
   "name": "lipya1",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://medfvdfer3.github.io/lipyaproject",
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-        "predeploy": "npm run build",
-            "deploy": "gh-pages -d build"
-
-
+    "export": "next export",
+    "predeploy": "npm run build && npm run export",
+    "deploy": "gh-pages -d out"
   },
   "dependencies": {
-    "homepage": "https://github.com/medfvdfer3/lipyaproject.git",
     "@fortawesome/fontawesome-free": "^6.7.2",
     "bootstrap": "^5.3.6",
     "firebase": "^11.8.1",
